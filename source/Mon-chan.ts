@@ -2,16 +2,20 @@
  * @Author: WesFerreira - https://github.com/WesFerreira
  * @Date: 2019-01-02 07:01:52
  * @Last Modified by: WesFerreira
- * @Last Modified time: 2019-01-02 23:33:31
+ * @Last Modified time: 2019-01-03 01:30:29
  */
+
+import { injectable, inject } from "inversify";
+import { IBox2App, IBox2AppSetters, B2AppOptions } from "./interfaces/IBox2App";
 
 export namespace Mon {
     export namespace Helpers {
-        export class Box2App {
+        @injectable()
+        export class Box2App implements IBox2App {
             public world: Box2D.Dynamics.b2World;
             public scale = 30;
 
-            public set = {
+            public set: IBox2AppSetters = {
                 animation: {
                     positionIterations: (positionIterations: number) => {
                         this.positionIterations = positionIterations;
@@ -58,7 +62,8 @@ export namespace Mon {
                 setTimeout(this.applyPhysics, this.timeStep);
             }
 
-            constructor(options: B2AppOptions) {
+            constructor(@inject("B2AppOptions") options: B2AppOptions) {
+
                 this.w = options.w;
                 this.h = options.h;
 
@@ -94,12 +99,4 @@ export namespace Mon {
             }
         }
     }
-}
-
-interface B2AppOptions {
-    debug?: boolean;
-    gravity?: Box2D.Common.Math.b2Vec2;
-    allowSleep?: boolean;
-    w: number;
-    h: number;
 }

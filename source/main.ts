@@ -1,123 +1,86 @@
-import { Mon } from "./Mon-chan";
+/*
+ * @Author: WesFerreira - https://github.com/WesFerreira
+ * @Date: 2019-01-03 00:12:27
+ * @Last Modified by: WesFerreira
+ * @Last Modified time: 2019-01-03 05:57:33
+ *
+ * LET'S GOOO!!
+ */
 
-/** Created by WesFerreira 22/12/18 */
+// tslint:disable:object-literal-sort-keys
+import { Game } from "./Game";
+import { GraphicFactory } from "./GraphicFactory";
+import { MonContactListener } from "./handlers/MonContactListener";
 
-// // Shorteners
-let b2BodyDef = Box2D.Dynamics.b2BodyDef;
-let b2Body = Box2D.Dynamics.b2Body;
-let b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
-let b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
-let b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
+// Globals
+let pixiApp: PIXI.Application;
+let game: Game;
 
-// let world: Box2D.Dynamics.b2World;
-// 30 pixels on our canvas correspond to 1 meter in the box2d world
-let scale = 30;
-let b2App: Mon.Helpers.Box2App;
+let w = window.innerWidth;
+let h = 440;
 
-function createFloor() {
-    // A body definition holds all the data needed to construct a rigid body
-    let bodyDef = new b2BodyDef;
-    bodyDef.type = b2Body.b2_staticBody;
-    bodyDef.position.x = 20 / 2 / scale;
-    bodyDef.position.y = 50 / scale - 15;
-    // A fixture is used to attach a shape to a body for collision detection
-    // A fixture definition is used to create a fixture
-    let fixtureDef = new b2FixtureDef;
-    fixtureDef.density = 1.0;
-    fixtureDef.friction = 0.5;
-    fixtureDef.restitution = 0.2;
-    let poly = new b2PolygonShape;
-    poly.SetAsBox(200 / scale, 10 / scale); // 400 pixels wide and 20 pixels tall
-    fixtureDef.shape = poly;
-    let body = b2App.world.CreateBody(bodyDef);
-    let fixture = body.CreateFixture(fixtureDef);
-
-    let vertex = Array();
-    poly.GetVertices().forEach(vert => {
-        let x = vert.x * 30;
-        let y = vert.y * 30;
-        vertex.push(x, y);
-    });
-    console.log("floor");
-
-    return {
-        verices: vertex,
-        x: bodyDef.position.x * 30,
-        y: bodyDef.position.y * 30,
-    };
-}
-
-function createCircleBody() {
-    let bodyDef = new b2BodyDef;
-    bodyDef.type = b2Body.b2_dynamicBody;
-    bodyDef.position.x = 400 / 2 / scale;
-    bodyDef.position.y = 50 / scale;
-    let fixtureDef = new b2FixtureDef;
-    fixtureDef.density = 1.0;
-    fixtureDef.friction = 0.5;
-    fixtureDef.restitution = 0.3;
-    let circl = new b2CircleShape(20 / scale);
-    fixtureDef.shape = circl;
-    let body = b2App.world.CreateBody(bodyDef);
-    let fixture = body.CreateFixture(fixtureDef);
-
-    return {
-        body: body,
-        radius: circl.GetRadius() * 30,
-        x: bodyDef.position.x * 30,
-        y: bodyDef.position.y * 30,
-    };
-}
 document.body.onload = function () {
-    let w = 800;
-    let h = 440;
+    ////////////////// SETUP //////////////////
+    pixiApp = new PIXI.Application({
+        width: w,
+        height: h,
+        antialias: true,
+        backgroundColor: 0xcccccc,
+    });
+    document.body.appendChild(pixiApp.renderer.view);
 
-    let app = new PIXI.Application({ width: w, height: h, backgroundColor: 0x777777, antialias: true });
-    document.body.appendChild(app.view);
-    app.view.setAttribute("id", "pixi");
-    b2App = new Mon.Helpers.Box2App({ w: w, h: h, debug: true});
+    game = new Game({
+        w: w,
+        h: h,
+        allowSleep: true,
+        debug: true,
+        // gravity: new Box2D.Common.Math.b2Vec2(0, 0),
+    });
+    ///////////////////////////////////////////
+    game.box2App.world.SetContactListener(new MonContactListener());
+    let gFactory = new GraphicFactory(game.box2App);
 
-    let floor = createFloor();
-    let circl = createCircleBody();
+    gFactory.newPlatform({
+        x: 270,
+        y: h - 3,
+        w: w,
+        userData: "floor1",
+    });
 
-    let circle = new PIXI.Graphics();
-    circle.beginFill(0x5cafe2);
-    circle.drawCircle(0, 0, circl.radius);
-    circle.x = 50;
-    circle.y = 50;
+    gFactory.newPlatform({
+        x: 610,
+        y: 380,
+        w: 70,
+        userData: "floor2",
+    });
 
-    let circly = new PIXI.Graphics();
-    circly.beginFill(0x000);
-    circly.drawCircle(15, 0, 5);
+    let player = gFactory.newPlayer({
+        x: 25,
+        y: 20,
+        userData: "player",
+    });
 
-    circle.addChild(circly);
+    game.box2App.applyPhysics();
 
-    let circl2 = createCircleBody();
+    window.onkeydown = (e) => {
+        if (e.keyCode === 32) {
+            player.ApplyForce(new Box2D.Common.Math.b2Vec2(0, -300), player.GetWorldCenter());
+        }
+        if (e.keyCode === 39) {
+            player.ApplyForce(new Box2D.Common.Math.b2Vec2(100, 0), player.GetWorldCenter());
+            player.ApplyForce(new Box2D.Common.Math.b2Vec2(0, 0), player.GetWorldCenter());
+        }
+        if (e.keyCode === 37) {
+            player.ApplyForce(new Box2D.Common.Math.b2Vec2(-100, 0), player.GetWorldCenter());
+            player.ApplyForce(new Box2D.Common.Math.b2Vec2(0, 0), player.GetWorldCenter());
+        }
+        console.log(e.keyCode);
 
-    let circle2 = new PIXI.Graphics();
-    circle2.beginFill(0xfff);
-    circle2.drawCircle(0, 0, circl2.radius);
+    };
 
-    let polyy = new PIXI.Graphics();
-    polyy.beginFill(0x5cafe2);
-    polyy.drawPolygon(floor.verices);
-    polyy.x = floor.x;
-    polyy.y = floor.y;
+    // tslint:disable-next-line:no-empty
+    pixiApp.ticker.add((delta) => {
 
-    app.stage.addChild(polyy);
-    app.stage.addChild(circle);
-    app.stage.addChild(circle2);
-
-    b2App.set.animation.timeStep(1 / 60);
-    b2App.applyPhysics();
-
-    app.ticker.add(function (delta) {
-        circle.x = circl.body.GetWorldCenter().x * 30;
-        circle.y = circl.body.GetWorldCenter().y * 30;
-        circle.rotation = circl.body.GetAngle();
-
-        circle2.x = circl2.body.GetWorldCenter().x * 30;
-        circle2.y = circl2.body.GetWorldCenter().y * 30;
     });
 
 };
