@@ -2,7 +2,7 @@ import { GraphicOptions } from "../interfaces/IGraphic";
 import { Box2AppService } from "../services/Box2AppService";
 
 export class Graphics {
-    protected static createPlatform(options: GraphicOptions, box2App: Box2AppService) {
+    public static createPlatform(options: GraphicOptions, box2App: Box2AppService) {
         let bodyDef = new Box2D.Dynamics.b2BodyDef();
         bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
         bodyDef.position.x = options.x / box2App.scale;
@@ -18,7 +18,7 @@ export class Graphics {
         fixture.SetUserData(options.userData);
     }
 
-    protected static createPlayer(options: GraphicOptions, box2App: Box2AppService) {
+    public static createPlayer(options: GraphicOptions, box2App: Box2AppService) {
         let bodyDef = new Box2D.Dynamics.b2BodyDef();
         bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
         bodyDef.position.x = options.x / box2App.scale;
@@ -30,7 +30,7 @@ export class Graphics {
         let fixtureDef = new Box2D.Dynamics.b2FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0;
-        fixtureDef.friction = 20;
+        fixtureDef.friction = 5;
         // fixtureDef.restitution = 0.5;
 
         let body = box2App.world.CreateBody(bodyDef);

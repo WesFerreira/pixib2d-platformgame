@@ -2,7 +2,7 @@
  * @Author: WesFerreira - https://github.com/WesFerreira
  * @Date: 2019-01-03 00:12:27
  * @Last Modified by: WesFerreira
- * @Last Modified time: 2019-01-03 05:57:33
+ * @Last Modified time: 2019-01-04 03:09:32
  *
  * LET'S GOOO!!
  */
@@ -11,6 +11,7 @@
 import { Game } from "./Game";
 import { GraphicFactory } from "./GraphicFactory";
 import { MonContactListener } from "./handlers/MonContactListener";
+import { Player } from "./entities/Player";
 
 // Globals
 let pixiApp: PIXI.Application;
@@ -34,7 +35,7 @@ document.body.onload = function () {
         h: h,
         allowSleep: true,
         debug: true,
-        // gravity: new Box2D.Common.Math.b2Vec2(0, 0),
+        // gravity: new Box2D.Common.Math.b2Vec2(0, 1),
     });
     ///////////////////////////////////////////
     game.box2App.world.SetContactListener(new MonContactListener());
@@ -54,28 +55,29 @@ document.body.onload = function () {
         userData: "floor2",
     });
 
-    let player = gFactory.newPlayer({
+    let player = new Player({
         x: 25,
         y: 20,
         userData: "player",
-    });
+    }, game.box2App);
 
-    game.box2App.applyPhysics();
+    function physicsLoop() {
+        game.box2App.world.Step(1 / 60, 8, 3);
+        game.box2App.world.ClearForces();
+        game.box2App.world.DrawDebugData();
 
-    window.onkeydown = (e) => {
-        if (e.keyCode === 32) {
-            player.ApplyForce(new Box2D.Common.Math.b2Vec2(0, -300), player.GetWorldCenter());
-        }
-        if (e.keyCode === 39) {
-            player.ApplyForce(new Box2D.Common.Math.b2Vec2(100, 0), player.GetWorldCenter());
-            player.ApplyForce(new Box2D.Common.Math.b2Vec2(0, 0), player.GetWorldCenter());
-        }
-        if (e.keyCode === 37) {
-            player.ApplyForce(new Box2D.Common.Math.b2Vec2(-100, 0), player.GetWorldCenter());
-            player.ApplyForce(new Box2D.Common.Math.b2Vec2(0, 0), player.GetWorldCenter());
-        }
-        console.log(e.keyCode);
+        player.updateMovements();
+        setTimeout(physicsLoop, 1 / 60);
+    }
 
+    physicsLoop();
+
+    window.onkeydown = (e: KeyboardEvent) => {
+        player.keyDown(e);
+    };
+
+    window.onkeyup = (e) => {
+        player.keyUp(e);
     };
 
     // tslint:disable-next-line:no-empty
