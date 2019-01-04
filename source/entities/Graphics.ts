@@ -1,3 +1,10 @@
+/*
+ * @Author: WesFerreira - https://github.com/WesFerreira
+ * @Date: 2019-01-04 06:04:13
+ * @Last Modified by: WesFerreira
+ * @Last Modified time: 2019-01-04 06:04:36
+ */
+
 import { GraphicOptions } from "../interfaces/IGraphic";
 import { Box2AppService } from "../services/Box2AppService";
 

@@ -1,3 +1,10 @@
+/*
+ * @Author: WesFerreira - https://github.com/WesFerreira
+ * @Date: 2019-01-04 06:04:02
+ * @Last Modified by:   WesFerreira
+ * @Last Modified time: 2019-01-04 06:04:02
+ */
+
 import playerSharedProps from "../entities/Player";
 
 export class MonContactListener implements Box2D.Dynamics.b2ContactListener {
