@@ -18,7 +18,7 @@ let pixiApp: PIXI.Application;
 let game: Game;
 
 let w = window.innerWidth;
-let h = 440;
+let h = window.innerHeight;
 
 document.body.onload = function () {
     ////////////////// SETUP //////////////////
@@ -42,15 +42,22 @@ document.body.onload = function () {
     let gFactory = new GraphicFactory(game.box2App);
 
     gFactory.newPlatform({
-        x: 270,
-        y: h - 3,
-        w: w,
+        x: w / 2,
+        y: h - 2,
+        w: w / 2,
         userData: "floor1",
     });
 
     gFactory.newPlatform({
         x: 610,
-        y: 380,
+        y: h - 27 * 2,
+        w: 70,
+        userData: "floor2",
+    });
+
+    gFactory.newPlatform({
+        x: 260,
+        y: h - 27 * 5,
         w: 70,
         userData: "floor2",
     });
@@ -84,6 +91,5 @@ document.body.onload = function () {
     pixiApp.ticker.add((delta) => {
 
     });
-
 };
 

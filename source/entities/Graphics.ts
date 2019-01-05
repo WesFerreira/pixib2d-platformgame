@@ -7,6 +7,7 @@
 
 import { GraphicOptions } from "../interfaces/IGraphic";
 import { Box2AppService } from "../services/Box2AppService";
+import IDENTFIER from "../Identifiers";
 
 export class Graphics {
     public static createPlatform(options: GraphicOptions, box2App: Box2AppService) {
@@ -49,7 +50,7 @@ export class Graphics {
         fixtureDef.isSensor = true;
         let foot = body.CreateFixture(fixtureDef);
 
-        foot.SetUserData("foot");
+        foot.SetUserData(IDENTFIER.DATA.PLAYER_FOOT);
 
         return body;
 

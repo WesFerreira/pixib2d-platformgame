@@ -6,29 +6,18 @@
  */
 
 import playerSharedProps from "../entities/Player";
+import IDENTFIER from "../Identifiers";
 
 export class MonContactListener implements Box2D.Dynamics.b2ContactListener {
 
-    public BeginContact(contact: Box2D.Dynamics.Contacts.b2Contact): void {
-        if (contact.GetFixtureA().GetUserData() === "foot") {
-            playerSharedProps.grounded = true;
-            playerSharedProps.canJump = false;
+    private airJumpCount = playerSharedProps.jumpCount;
 
-            /* playerSharedProps.canJump = true;
-            playerSharedProps.jumpCount = 2; */
-        }
+    public BeginContact(contact: Box2D.Dynamics.Contacts.b2Contact): void {
+        this.playerIsOnGround(contact);
     }
 
     public EndContact(contact: Box2D.Dynamics.Contacts.b2Contact): void {
-        if (contact.GetFixtureA().GetUserData() === "foot") {
-            playerSharedProps.grounded = false;
-            playerSharedProps.canJump = true;
-
-/*
-            if (playerSharedProps.jumpCount < 1) {
-                playerSharedProps.canJump = false;
-            } */
-        }
+        this.playerIsNotOnGround(contact);
     }
 
     public PostSolve(contact: Box2D.Dynamics.Contacts.b2Contact, impulse: Box2D.Dynamics.b2ContactImpulse): void {
@@ -39,5 +28,20 @@ export class MonContactListener implements Box2D.Dynamics.b2ContactListener {
     public PreSolve(contact: Box2D.Dynamics.Contacts.b2Contact, oldManifold: Box2D.Collision.b2Manifold): void {
         // console.log("PreSolve");
 
+    }
+
+    private playerIsOnGround(c: Box2D.Dynamics.Contacts.b2Contact) {
+        if (c.GetFixtureA().GetUserData() === IDENTFIER.DATA.PLAYER_FOOT) {
+            playerSharedProps.grounded = true;
+            playerSharedProps.canAirJump = false;
+
+            playerSharedProps.jumpCount = this.airJumpCount; // Reset jumpCount
+        }
+    }
+    private playerIsNotOnGround(c: Box2D.Dynamics.Contacts.b2Contact) {
+        if (c.GetFixtureA().GetUserData() === IDENTFIER.DATA.PLAYER_FOOT) {
+            playerSharedProps.grounded = false;
+            playerSharedProps.canAirJump = true;
+        }
     }
 }

@@ -12,7 +12,7 @@ import { Graphics } from "./Graphics";
 // tslint:disable:object-literal-sort-keys
 let playerSharedProps = {
     grounded: false,
-    canJump: false,
+    canAirJump: false,
     jumpCount: 2,
 };
 export default playerSharedProps;
@@ -22,9 +22,9 @@ export class Player {
 
     public canWalk = true;
 
-    public moveRight: boolean;
-    public moveLeft: boolean;
-    public moveJump: boolean;
+    public movingRight: boolean;
+    public movingLeft: boolean;
+    public isJumping: boolean;
 
     public maxVelocity = 3;
     private velocity: Box2D.Common.Math.b2Vec2;
@@ -38,7 +38,6 @@ export class Player {
         this.constantWalk();
 
         this.jump();
-        this.multiJump(); // FIXME:
         this.walkRight();
         this.walkLeft();
     }
@@ -48,24 +47,25 @@ export class Player {
     ////////////////////////////////////////////////////////////////////////////////
     public keyDown(e: KeyboardEvent) {
         if (e.keyCode === 32) {
-            this.moveJump = true;
+            this.isJumping = true;
+            this.multiJump();
         }
         if (e.keyCode === 39 && this.velocity.x < this.maxVelocity) {
-            this.moveRight = true;
+            this.movingRight = true;
         }
         if (e.keyCode === 37 && this.velocity.x > -this.maxVelocity) {
-            this.moveLeft = true;
+            this.movingLeft = true;
         }
     }
     public keyUp(e: KeyboardEvent) {
         if (e.keyCode === 32) {
-            this.moveJump = false;
+            this.isJumping = false;
         }
         if (e.keyCode === 39) {
-            this.moveRight = false;
+            this.movingRight = false;
         }
         if (e.keyCode === 37) {
-            this.moveLeft = false;
+            this.movingLeft = false;
         }
     }
 
@@ -73,25 +73,29 @@ export class Player {
     //                                 MOVEMENT                                   //
     ////////////////////////////////////////////////////////////////////////////////
     private jump() {
-        if (this.moveJump && playerSharedProps.grounded) {
-            this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(0, -35 / this.box2App.scale), this.body.GetWorldCenter());
+        if (this.isJumping && playerSharedProps.grounded) {
+            this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(0, -26 / this.box2App.scale), this.body.GetWorldCenter());
         }
     }
     private multiJump() {
-        if (playerSharedProps.canJump) {
-            console.log("D");
-            playerSharedProps.canJump = false;
+        playerSharedProps.jumpCount--;
+        if (playerSharedProps.canAirJump) {
+
+            if (playerSharedProps.jumpCount-- <= 0) {
+                playerSharedProps.canAirJump = false;
+            }
+
             this.body.SetLinearVelocity(new Box2D.Common.Math.b2Vec2(0, 0));
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(0, -100 / this.box2App.scale), this.body.GetWorldCenter());
         }
     }
     private walkRight() {
-        if (this.moveRight) {
+        if (this.movingRight) {
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(10 / this.box2App.scale, 0), this.body.GetWorldCenter());
         }
     }
     private walkLeft() {
-        if (this.moveLeft) {
+        if (this.movingLeft) {
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(-10 / this.box2App.scale, 0), this.body.GetWorldCenter());
         }
     }

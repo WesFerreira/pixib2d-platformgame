@@ -3,6 +3,9 @@ const IDENTFIER = {
     SERVICE: {
         BOX2APP: "IBox2App",
     },
+    DATA: {
+        PLAYER_FOOT: "playerFoot",
+    },
 };
 
 export default IDENTFIER;
