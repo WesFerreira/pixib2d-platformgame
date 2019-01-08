@@ -30,9 +30,10 @@ export class MonContactListener implements Box2D.Dynamics.b2ContactListener {
     }
 
     public PreSolve(contact: Box2D.Dynamics.Contacts.b2Contact, oldManifold: Box2D.Collision.b2Manifold): void {
-
-        if (contact.GetFixtureA().GetBody().GetPosition().y > contact.GetFixtureB().GetBody().GetPosition().y) {
-            contact.SetEnabled(false);
+        if (contact.GetFixtureB().GetUserData() === IDENTFIER.DATA.TYPE.ONE_WAY_PLATFORM) {
+            if (contact.GetFixtureA().GetBody().GetPosition().y > contact.GetFixtureB().GetBody().GetPosition().y) {
+                contact.SetEnabled(false);
+            }
         }
     }
 

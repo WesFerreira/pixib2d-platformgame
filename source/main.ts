@@ -12,6 +12,7 @@ import { Game } from "./Game";
 import { GraphicFactory } from "./GraphicFactory";
 import { MonContactListener } from "./handlers/MonContactListener";
 import { Player } from "./entities/Player";
+import IDENTFIER from "./Identifiers";
 
 // Globals
 let pixiApp: PIXI.Application;
@@ -53,14 +54,21 @@ document.body.onload = function () {
         x: 610,
         y: h - 27 * 2,
         w: 70,
-        userData: "floor",
+        userData: IDENTFIER.DATA.TYPE.ONE_WAY_PLATFORM,
+    });
+
+    gFactory.newPlatform({
+        x: 780,
+        y: h - 27 * 2,
+        w: 70,
+        userData: "",
     });
 
     gFactory.newPlatform({
         x: 260,
         y: h - 27 * 5,
         w: 70,
-        userData: "floor",
+        userData: "platform",
     });
 
     let player = new Player({

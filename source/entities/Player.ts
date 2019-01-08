@@ -81,7 +81,6 @@ export class Player {
     /////////////////////////////   Single Movement   //////////////////////////////
     private jump() {
         if (playerSharedProps.grounded) {
-            console.log("j");
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(0,
                 -this.body.GetMass() * this.jumpImpulse * 3.3), this.body.GetWorldCenter());
         }

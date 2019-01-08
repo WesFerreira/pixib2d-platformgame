@@ -5,6 +5,9 @@ const IDENTFIER = {
     },
     DATA: {
         PLAYER_FOOT: "playerFoot",
+        TYPE: {
+            ONE_WAY_PLATFORM: "OWP",
+        },
     },
 };
 
