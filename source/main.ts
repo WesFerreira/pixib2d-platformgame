@@ -38,6 +38,7 @@ document.body.onload = function () {
         // gravity: new Box2D.Common.Math.b2Vec2(0, 1),
     });
     ///////////////////////////////////////////
+
     game.box2App.world.SetContactListener(new MonContactListener());
     let gFactory = new GraphicFactory(game.box2App);
 
