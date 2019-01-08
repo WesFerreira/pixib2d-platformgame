@@ -43,7 +43,7 @@ export class Graphics {
 
         let body = box2App.world.CreateBody(bodyDef);
         let fixture = body.CreateFixture(fixtureDef);
-        fixture.SetUserData(options.userData);
+        body.SetUserData(options.userData);
 
         shape.SetAsOrientedBox(10 / box2App.scale, 2 / box2App.scale, new Box2D.Common.Math.b2Vec2(0, 12 / box2App.scale));
         fixtureDef.shape = shape;

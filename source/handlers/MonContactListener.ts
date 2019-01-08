@@ -13,10 +13,14 @@ export class MonContactListener implements Box2D.Dynamics.b2ContactListener {
     private airJumpCount = playerSharedProps.jumpCount;
 
     public BeginContact(contact: Box2D.Dynamics.Contacts.b2Contact): void {
+        // console.log(contact.GetFixtureA().GetUserData() + " --- " + contact.GetFixtureB().GetUserData());
+
         this.playerIsOnGround(contact);
     }
 
     public EndContact(contact: Box2D.Dynamics.Contacts.b2Contact): void {
+
+        // contact.SetEnabled(true);
         this.playerIsNotOnGround(contact);
     }
 
@@ -26,12 +30,15 @@ export class MonContactListener implements Box2D.Dynamics.b2ContactListener {
     }
 
     public PreSolve(contact: Box2D.Dynamics.Contacts.b2Contact, oldManifold: Box2D.Collision.b2Manifold): void {
-        // console.log("PreSolve");
 
+        if (contact.GetFixtureA().GetBody().GetPosition().y > contact.GetFixtureB().GetBody().GetPosition().y) {
+            contact.SetEnabled(false);
+        }
     }
 
     private playerIsOnGround(c: Box2D.Dynamics.Contacts.b2Contact) {
         if (c.GetFixtureA().GetUserData() === IDENTFIER.DATA.PLAYER_FOOT) {
+
             playerSharedProps.grounded = true;
             playerSharedProps.canAirJump = false;
 

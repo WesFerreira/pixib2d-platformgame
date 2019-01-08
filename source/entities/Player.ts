@@ -24,10 +24,13 @@ export class Player {
 
     public movingRight: boolean;
     public movingLeft: boolean;
-    public isJumping: boolean;
 
     public maxVelocity = 3;
     private velocity: Box2D.Common.Math.b2Vec2;
+
+    private jumpImpulse = 2;
+    private onceSpaceFire = false;
+
 
     constructor(options: GraphicOptions, private box2App: Box2AppService) {
         this.body = Graphics.createPlayer(options, this.box2App);
@@ -37,9 +40,8 @@ export class Player {
         this.velocity = this.body.GetLinearVelocity();
         this.constantWalk();
 
-        this.jump();
-        this.walkRight();
-        this.walkLeft();
+        this.walkRight(); // Continuous
+        this.walkLeft();  // Continuous
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -47,8 +49,11 @@ export class Player {
     ////////////////////////////////////////////////////////////////////////////////
     public keyDown(e: KeyboardEvent) {
         if (e.keyCode === 32) {
-            this.isJumping = true;
-            this.multiJump();
+            if (this.onceSpaceFire) { return; }
+            this.onceSpaceFire = true;
+
+            this.jump();      // Single
+            this.multiJump(); // Single
         }
         if (e.keyCode === 39 && this.velocity.x < this.maxVelocity) {
             this.movingRight = true;
@@ -59,7 +64,7 @@ export class Player {
     }
     public keyUp(e: KeyboardEvent) {
         if (e.keyCode === 32) {
-            this.isJumping = false;
+            this.onceSpaceFire = false;
         }
         if (e.keyCode === 39) {
             this.movingRight = false;
@@ -70,11 +75,15 @@ export class Player {
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    //                                 MOVEMENT                                   //
+    //                                 MOVEMENTS                                  //
     ////////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////   Single Movement   //////////////////////////////
     private jump() {
-        if (this.isJumping && playerSharedProps.grounded) {
-            this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(0, -26 / this.box2App.scale), this.body.GetWorldCenter());
+        if (playerSharedProps.grounded) {
+            console.log("j");
+            this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(0,
+                -this.body.GetMass() * this.jumpImpulse * 3.3), this.body.GetWorldCenter());
         }
     }
     private multiJump() {
@@ -89,6 +98,8 @@ export class Player {
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(0, -100 / this.box2App.scale), this.body.GetWorldCenter());
         }
     }
+
+    ///////////////////////////// Continuous Movement //////////////////////////////
     private walkRight() {
         if (this.movingRight) {
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(10 / this.box2App.scale, 0), this.body.GetWorldCenter());

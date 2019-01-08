@@ -46,25 +46,25 @@ document.body.onload = function () {
         x: w / 2,
         y: h - 2,
         w: w / 2,
-        userData: "floor1",
+        userData: "floor",
     });
 
     gFactory.newPlatform({
         x: 610,
         y: h - 27 * 2,
         w: 70,
-        userData: "floor2",
+        userData: "floor",
     });
 
     gFactory.newPlatform({
         x: 260,
         y: h - 27 * 5,
         w: 70,
-        userData: "floor2",
+        userData: "floor",
     });
 
     let player = new Player({
-        x: 25,
+        x: 200,
         y: 20,
         userData: "player",
     }, game.box2App);
@@ -80,11 +80,10 @@ document.body.onload = function () {
 
     physicsLoop();
 
-    window.onkeydown = (e: KeyboardEvent) => {
+    document.onkeydown = (e: KeyboardEvent) => {
         player.keyDown(e);
     };
-
-    window.onkeyup = (e) => {
+    document.onkeyup = (e) => {
         player.keyUp(e);
     };
 
