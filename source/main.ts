@@ -22,6 +22,7 @@ let w = window.innerWidth;
 let h = window.innerHeight;
 
 document.body.onload = function () {
+
     ////////////////// SETUP //////////////////
     pixiApp = new PIXI.Application({
         width: w,
@@ -46,8 +47,20 @@ document.body.onload = function () {
     gFactory.newPlatform({
         x: w / 2,
         y: h - 2,
-        w: w / 2,
+        w: w,
         userData: "floor",
+    });
+    gFactory.newPlatform({
+        x: w / 2,
+        y: h - 2,
+        w: 2,
+        userData: "dot",
+    });
+    gFactory.newPlatform({
+        x: -w / 2,
+        y: h - 2,
+        w: 2,
+        userData: "dot",
     });
 
     gFactory.newPlatform({
@@ -72,18 +85,31 @@ document.body.onload = function () {
     });
 
     let player = new Player({
-        x: 200,
+        x: w / 2,
         y: 20,
         userData: "player",
     }, game.box2App);
 
+    let cvs = <HTMLCanvasElement>document.getElementById("debugView");
+    let ctx = cvs.getContext("2d");
+
+    let scale = 2;
+
     function physicsLoop() {
+        ctx.save();
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        ctx.scale(scale, scale);
+
+        // "Camera" position is keeping player on center (x & y)
+        ctx.translate(-player.body.GetWorldCenter().x * 30 + w / (2 * scale), -player.body.GetWorldCenter().y * 30 + h / (2 * scale));
+
         game.box2App.world.Step(1 / 60, 8, 3);
         game.box2App.world.ClearForces();
         game.box2App.world.DrawDebugData();
 
         player.updateMovements();
         setTimeout(physicsLoop, 1 / 60);
+        ctx.restore();
     }
 
     physicsLoop();

@@ -22,8 +22,8 @@ export class Player {
 
     public canWalk = true;
 
-    public movingRight: boolean;
-    public movingLeft: boolean;
+    public walkRightKeyPressed: boolean;
+    public walkLeftKeyPressed: boolean;
 
     public maxVelocity = 3;
     private velocity: Box2D.Common.Math.b2Vec2;
@@ -56,10 +56,10 @@ export class Player {
             this.multiJump(); // Single
         }
         if (e.keyCode === 39 && this.velocity.x < this.maxVelocity) {
-            this.movingRight = true;
+            this.walkRightKeyPressed = true;
         }
         if (e.keyCode === 37 && this.velocity.x > -this.maxVelocity) {
-            this.movingLeft = true;
+            this.walkLeftKeyPressed = true;
         }
     }
     public keyUp(e: KeyboardEvent) {
@@ -67,10 +67,10 @@ export class Player {
             this.onceSpaceFire = false;
         }
         if (e.keyCode === 39) {
-            this.movingRight = false;
+            this.walkRightKeyPressed = false;
         }
         if (e.keyCode === 37) {
-            this.movingLeft = false;
+            this.walkLeftKeyPressed = false;
         }
     }
 
@@ -82,7 +82,7 @@ export class Player {
     private jump() {
         if (playerSharedProps.grounded) {
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(0,
-                -this.body.GetMass() * this.jumpImpulse * 3.3), this.body.GetWorldCenter());
+                -55 / this.box2App.scale * this.jumpImpulse), this.body.GetWorldCenter());
         }
     }
     private multiJump() {
@@ -100,12 +100,12 @@ export class Player {
 
     ///////////////////////////// Continuous Movement //////////////////////////////
     private walkRight() {
-        if (this.movingRight) {
+        if (this.walkRightKeyPressed) {
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(10 / this.box2App.scale, 0), this.body.GetWorldCenter());
         }
     }
     private walkLeft() {
-        if (this.movingLeft) {
+        if (this.walkLeftKeyPressed) {
             this.body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(-10 / this.box2App.scale, 0), this.body.GetWorldCenter());
         }
     }
