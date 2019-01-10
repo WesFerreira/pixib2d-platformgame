@@ -2,7 +2,7 @@
  * @Author: WesFerreira - https://github.com/WesFerreira
  * @Date: 2019-01-03 00:12:27
  * @Last Modified by: WesFerreira
- * @Last Modified time: 2019-01-04 03:09:32
+ * @Last Modified time: 2019-01-09 06:10:48
  *
  * LET'S GOOO!!
  */
@@ -50,19 +50,6 @@ document.body.onload = function () {
         w: w,
         userData: "floor",
     });
-    gFactory.newPlatform({
-        x: w / 2,
-        y: h - 2,
-        w: 2,
-        userData: "dot",
-    });
-    gFactory.newPlatform({
-        x: -w / 2,
-        y: h - 2,
-        w: 2,
-        userData: "dot",
-    });
-
     gFactory.newPlatform({
         x: 610,
         y: h - 27 * 2,
